@@ -24,7 +24,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 app.use(session({secret: 'cat'}));
 
-console.log('starting again...')
 
 app.get('/', 
 function(req, res) {
@@ -60,7 +59,6 @@ function(req, res) {
 
 app.get('/links', 
 function(req, res) {
-  // res.redirect('/login');
   if (req.session.user) {
     Links.reset().fetch().then(function(links) {
       res.send(200, links.models);
@@ -109,7 +107,6 @@ function(req, res) {
 
   new User({username: username, password: password}).fetch().then(function(found) {
     if(found) {
-      console.log(req.session.regenerate.toString());
       req.session.regenerate(function(err) {
         if(err){throw(err)}
         req.session.user = username;
