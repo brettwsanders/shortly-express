@@ -63,7 +63,7 @@ describe('', function() {
 
     var requestWithSession = request.defaults({jar: true});
 
-var xbeforeEach = function(){};
+    var xbeforeEach = function(done){
       // create a user that we can then log-in with
       new User({
           'username': 'Phillip',
@@ -83,7 +83,7 @@ var xbeforeEach = function(){};
           done();
         });
       });
-    });
+    };
 
     it('Only shortens valid urls, returning a 404 - Not found for invalid urls', function(done) {
       var options = {
@@ -162,7 +162,8 @@ var xbeforeEach = function(){};
           base_url: 'http://127.0.0.1:4568'
         });
         link.save().then(function(){
-          done();
+          xbeforeEach(done);
+          // done();
         });
       });
 
@@ -213,7 +214,7 @@ var xbeforeEach = function(){};
 
   }); // 'Link creation'
 
-  xdescribe('Privileged Access:', function(){
+  describe('Privileged Access:', function(){
 
     it('Redirects to login page if a user tries to access the main page and is not signed in', function(done) {
       request('http://127.0.0.1:4568/', function(error, res, body) {
@@ -238,7 +239,7 @@ var xbeforeEach = function(){};
 
   }); // 'Priviledged Access'
 
-  xdescribe('Account Creation:', function(){
+  describe('Account Creation:', function(){
 
     it('Signup creates a user record', function(done) {
       var options = {
@@ -286,7 +287,7 @@ var xbeforeEach = function(){};
 
   }); // 'Account Creation'
 
-  xdescribe('Account Login:', function(){
+  describe('Account Login:', function(){
 
     var requestWithSession = request.defaults({jar: true});
 
