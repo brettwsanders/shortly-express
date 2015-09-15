@@ -16,6 +16,14 @@ var User = db.Model.extend({
       model.set('password', hash);
     });
     this.on('checkPassword', this.checkPassword, this);
+  },
+
+  checkPassword: function(passwordToCheck) {
+    console.log('checking password..');
+    var salt = this.get('salt');
+    var correctPassword = this.get('password');
+    var hash = bcrypt.hashSync(passwordToCheck, salt);
+    return correctPassword === hash;
   }
 });
 

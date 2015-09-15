@@ -105,17 +105,18 @@ app.post('/login',
 function(req, res) {
   var username = req.body.username; //abc
   var password = req.body.password; //123
-  var user = new User( {username : username} ).fetch().then(function(found) {
-    var salt = found.attributes.salt;
-    var correctPassword = found.attributes.password;
-    var hash = bcrypt.hashSync(password, salt);
-    found = correctPassword === hash;
-    if(found) {
-      req.session.regenerate(function(err) {
-        if(err){throw(err)}
-        req.session.user = username;
-        res.redirect('/');
-      });
+  var user = new User( {username : username} ).fetch().then(function(user) {
+    if(user) {
+      var found = user.checkPassword(password);
+      if(found) {
+        req.session.regenerate(function(err) {
+          if(err){throw(err)}
+          req.session.user = username;
+          res.redirect('/');
+        });
+      } else {
+        res.redirect('/login');
+      }
     } else {
       res.redirect('/login');
     }
