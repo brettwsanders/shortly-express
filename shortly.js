@@ -2,6 +2,7 @@ var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
+var bcrypt = require('bcrypt-nodejs');
 
 
 var db = require('./app/config');
@@ -102,10 +103,13 @@ function(req, res) {
 
 app.post('/login',
 function(req, res) {
-  var username = req.body.username;
-  var password = req.body.password;
-
-  new User({username: username, password: password}).fetch().then(function(found) {
+  var username = req.body.username; //abc
+  var password = req.body.password; //123
+  var user = new User( {username : username} ).fetch().then(function(found) {
+    var salt = found.attributes.salt;
+    var correctPassword = found.attributes.password;
+    var hash = bcrypt.hashSync(password, salt);
+    found = correctPassword === hash;
     if(found) {
       req.session.regenerate(function(err) {
         if(err){throw(err)}
@@ -123,6 +127,7 @@ function(req, res) {
   var username = req.body.username;
   var password = req.body.password;
   new User({ username: username }).fetch().then(function(found) {
+    console.log(found);
     if (found) {
       res.redirect('/signup');
     } else {
@@ -140,7 +145,6 @@ function(req, res) {
 // Write your authentication routes here
 /************************************************************/
 
-// });
 
 /************************************************************/
 // Handle the wildcard route last - if all other routes fail
